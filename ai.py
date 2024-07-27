@@ -8,18 +8,18 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import ParseMode, ChatActions
 from aiogram.utils import executor
 
-# Create the bot object.
-bot = Bot(token='7408633253:AAFO8nD7XrVqa2L-XMzJoXpZ7XnVoQEy1fA')
+# تعيين التوكن وAPI key مباشرة في السكريبت
+TELEGRAM_TOKEN = '7408633253:AAFO8nD7XrVqa2L-XMzJoXpZ7XnVoQEy1fA'
+GOOGLE_API_KEY = 'AIzaSyAilAGJig7Z7Jw0ttO0mXZEEVxVQoFWsnY'
+
+# إنشاء كائن البوت
+bot = Bot(token=TELEGRAM_TOKEN)
 dp = Dispatcher(bot)
 
-# Use os.getenv for the Google API key
-GOOGLE_API_KEY = os.getenv('AIzaSyAilAGJig7Z7Jw0ttO0mXZEEVxVQoFWsnY')
-
-# Configure the API key for Gemini
+# تكوين مفتاح API لـ Gemini
 genai.configure(api_key=GOOGLE_API_KEY)
 
 model = genai.GenerativeModel('gemini-pro-vision')
-
 
 @dp.message_handler(commands=['gemi'])
 async def gemi_handler(message: types.Message):
@@ -59,7 +59,6 @@ async def gemi_handler(message: types.Message):
         if loading_message:
             await bot.delete_message(chat_id=loading_message.chat.id, message_id=loading_message.message_id)
 
-
 @dp.message_handler(commands=['imgai'])
 async def generate_from_image(message: types.Message):
     user_id = message.from_user.id
@@ -88,7 +87,6 @@ async def generate_from_image(message: types.Message):
             await bot.delete_message(chat_id=processing_message.chat.id, message_id=processing_message.message_id)
     else:
         await message.answer("<b>Please reply to an image with this command.</b>", parse_mode='html')
-
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
